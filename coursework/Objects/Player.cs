@@ -23,7 +23,7 @@ namespace coursework.Objects
         public override void Render(Graphics g)
         {
             g.FillEllipse(
-                new SolidBrush(Color.DeepPink),
+                new SolidBrush(Color.DeepSkyBlue),
                 -size / 2, -size / 2,
                 size, size
             );

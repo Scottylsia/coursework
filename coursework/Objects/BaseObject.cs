@@ -13,7 +13,7 @@ namespace coursework.Objects
         public float y;
         public float angle;
         public int size = 30;
-
+        
         public Action<BaseObject, BaseObject> OnOverlap;
         public BaseObject(float x, float y, float angle)
         {
@@ -78,5 +78,9 @@ namespace coursework.Objects
 
         }
 
+        public virtual void renderParticles(Graphics g)
+        {
+
+        }
     }
 }

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using coursework.Objects;
+using coursework.Particles;
 
 namespace coursework
 {
@@ -15,9 +16,12 @@ namespace coursework
     public partial class Form1 : Form
     {
         List<BaseObject> objects = new List<BaseObject>();
+       // List<BaseParticles> particles = new List<BaseParticles>();
         Player player;
         Marker marker;
         int hitPoint = 10;
+        List<ParticleOfFire> particleOfFires = new List<ParticleOfFire>();
+        Point gravityPoint;
 
         public Form1()
         {
@@ -52,11 +56,17 @@ namespace coursework
             objects.Add(new Enemy(rnd.Next() % field.Width, rnd.Next() % field.Height, 0));
             objects.Add(new Enemy(rnd.Next() % field.Width, rnd.Next() % field.Height, 0));
 
+
+            gravityPoint = new Point(10, 10);
+            for (var i = 0; i < 20; i++)
+            {
+                particleOfFires.Add(new ParticleOfFire(0, 0));
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            
         }
 
         private void field_Paint(object sender, PaintEventArgs e)
@@ -74,16 +84,21 @@ namespace coursework
                     player.Overlap(obj);
                     obj.Overlap(player);
                 }
-                if(obj!=player)
-                { 
-                    obj.artificialIntelligence(player,g);
-            }}
+                if (obj is Enemy)
+                {
+                    obj.artificialIntelligence(player, g);
+                    obj.renderParticles(g);
+                }
+            }
             foreach (var obj in objects)
             {
 
                 g.Transform = obj.GetTransform();
                 obj.Render(g);
+ 
+
             }
+
         }
 
         private void updatePlayer()
@@ -98,7 +113,7 @@ namespace coursework
                 dy /= length;
 
                 /*                player.x += dx * 2;
-                                player.y += dy * 2;*/
+                               // player.y += dy * 2;*/
 
                 player.vX += dx * 0.5f;
                 player.vY += dy * 0.5f;
@@ -132,6 +147,14 @@ namespace coursework
 
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
         {
+        }
+
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Space)
+            {
+
+            }
         }
     }
 }

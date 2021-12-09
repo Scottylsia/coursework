@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Text;
+using coursework.Particles;
 
 
 namespace coursework.Objects
@@ -12,17 +13,45 @@ namespace coursework.Objects
         public float Mx;
         public float My;
         bool findEnemy = false;
+        List<ParticleOfFire> particleOfFires = new List<ParticleOfFire>();
+        Point gravityPoint;
+        ParticleOfFire pof;
         public Enemy(float x, float y, float angle):base(x,y,angle)
         {
            
             Mx = x;
             My = y;
+
+            gravityPoint = new Point((int)x, (int)y+10);
+
+            Random rnd = new Random();
+            for (var i = 0; i < 50; i++)
+            {
+                particleOfFires.Add(new ParticleOfFire(x + 4 - rnd.Next(8), y + 4 - rnd.Next(8)));
+                particleOfFires[i].onRelifefire += (rf) =>
+                 {
+                     particleOfFires.Remove(rf);
+                     particleOfFires.Add(new ParticleOfFire(x + 4 - rnd.Next(8), y + 4 - rnd.Next(8)));
+                 };
+            }
+
+
+
+/*            pof.onRelifefire += (rf) =>
+            {
+                particleOfFires.Remove(rf);
+                particleOfFires.Add(new ParticleOfFire(x + 4 - rnd.Next(8), y + 4 - rnd.Next(8)));
+            };*/
+
+
         }
 
         public override void Render(Graphics g)
         {
+
+              
             g.FillEllipse(
-                new SolidBrush(Color.DeepSkyBlue),
+                new SolidBrush(Color.DarkRed),
                 -size / 2, -size / 2,
                 size, size
             );
@@ -33,6 +62,29 @@ namespace coursework.Objects
             );
 
         }
+
+        public override void renderParticles(Graphics g)
+        {
+            foreach (var gp in particleOfFires)
+            {
+                gp.Life--;
+                if(gp.Life<0)
+                {
+                    Random rnd = new Random();
+                    gp.X = x + 4 - rnd.Next(8);
+                    gp.Y = y + 4 - rnd.Next(8);
+                    gp.Life = 10 + rnd.Next(20);
+                    gp.Radius = 1 + rnd.Next() % 5;
+                    gp.SpeedY = 2 - rnd.Next() % 4;
+                    gp.SpeedX = 2 - rnd.Next() % 4;
+                }
+
+                gp.gravityMove(gravityPoint);
+
+                gp.Draw(g);
+            }
+        }
+
 
         public override GraphicsPath GetGraphicsPath()
         {
@@ -106,16 +158,15 @@ namespace coursework.Objects
 
                 if (findEnemy)
                 {
-                    x += dx * 2;
-                    y += dy * 2;
+                     dx *= 2;
+                     dy *= 2;
                 }
-                else
-                {
+
                     x += dx;
                     y += dy;
-                }
+                gravityPoint.X = (int)(x - dx);
+                gravityPoint.Y = (int)(y - dy - 10);
             }
-            
 
         }
 
