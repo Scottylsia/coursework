@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Text;
 using coursework.Particles;
+using coursework;
 
 
 namespace coursework.Objects
@@ -51,12 +52,12 @@ namespace coursework.Objects
 
               
             g.FillEllipse(
-                new SolidBrush(Color.DarkRed),
+                new SolidBrush(Color.FromArgb(210, 105, 30)),
                 -size / 2, -size / 2,
                 size, size
             );
             g.DrawEllipse(
-                new Pen(Color.Black, 2),
+                new Pen(Color.FromArgb(128, 0, 0), 2),
                 -size / 2, -size / 2,
                 size, size
             );
@@ -100,6 +101,7 @@ namespace coursework.Objects
             return path;
         }
 
+        
         public Matrix GetTransformMarker()
         {
             var matrix = new Matrix();

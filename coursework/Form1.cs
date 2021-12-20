@@ -22,13 +22,14 @@ namespace coursework
         int hitPoint = 10;
         List<ParticleOfFire> particleOfFires = new List<ParticleOfFire>();
         Point gravityPoint;
+        bool shoted = false;
 
         public Form1()
         {
             InitializeComponent();
             Random rnd = new Random();
             player = new Player(field.Width / 2, field.Height / 2, 0);
-
+            
             player.OnOverlap += (p, obj) =>
             {
 
@@ -47,6 +48,12 @@ namespace coursework
                 objects.Add(new Enemy(rnd.Next() % field.Width, rnd.Next() % field.Height, 0));
             };
 
+            player.OnHit += (h) =>
+            {
+                objects.Remove(h);
+                objects.Add(new Enemy(rnd.Next() % field.Width, rnd.Next() % field.Height, 0));
+            };
+
             marker = new Marker(field.Width / 2 + 50, field.Height / 2 + 50, 0);
 
             objects.Add(player);
@@ -55,7 +62,6 @@ namespace coursework
             objects.Add(new Enemy(rnd.Next() % field.Width, rnd.Next() % field.Height, 0));
             objects.Add(new Enemy(rnd.Next() % field.Width, rnd.Next() % field.Height, 0));
             objects.Add(new Enemy(rnd.Next() % field.Width, rnd.Next() % field.Height, 0));
-
 
             gravityPoint = new Point(10, 10);
             for (var i = 0; i < 20; i++)
@@ -87,8 +93,22 @@ namespace coursework
                 if (obj is Enemy)
                 {
                     obj.artificialIntelligence(player, g);
-                    obj.renderParticles(g);
+                    
                 }
+                if(shoted)
+                {
+                    if (obj is Player)
+                    {
+                        shoted = player.shot();
+                    }
+                    if (obj is Enemy && player.hits(obj, g))
+                    {
+                        player.hit(obj);
+                    }
+
+                }
+
+                    obj.renderParticles(g);
             }
             foreach (var obj in objects)
             {
@@ -151,10 +171,33 @@ namespace coursework
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode == Keys.Space)
+            if (e.KeyCode == Keys.Space)
             {
-
+                if (player.bullet == null)
+                {
+                    shoted = true;
+                }
             }
         }
+
+       /* private bool shot()
+        {
+            if (bullet == null)
+            {
+                bullet = new Bullet(player.x, player.y, player.angle);
+            }
+            if (!bullet.alive())
+            {
+                bullet = null;
+                bullet.shot();
+                return false;
+            }
+            else
+            {
+                bullet.shot();
+
+                return true;
+            }
+        }*/
     }
 }

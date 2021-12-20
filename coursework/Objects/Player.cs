@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using coursework.Particles;
 
 
 namespace coursework.Objects
@@ -14,7 +15,11 @@ namespace coursework.Objects
 
         public Action<Enemy> OnEnemyOverlap;
 
+        public Action<Enemy> OnHit;
+
         public float vX, vY;
+
+        public Bullet bullet = null;
         public Player(float x, float y, float angle) : base(x, y, angle)
         {
 
@@ -33,13 +38,12 @@ namespace coursework.Objects
                 size, size
             );
             g.DrawLine(new Pen(Color.Black, 2), 0, 0, 25, 0);
-
         }
 
         public override GraphicsPath GetGraphicsPath()
         {
             var path = base.GetGraphicsPath();
-            path.AddEllipse(-size/2, -size/2, size, size);
+            path.AddEllipse(-size / 2, -size / 2, size, size);
             return path;
         }
 
@@ -51,10 +55,69 @@ namespace coursework.Objects
             {
                 OnMarkerOverlap(obj as Marker);
             }
-            if(obj is Enemy)
+            if (obj is Enemy)
             {
                 OnEnemyOverlap(obj as Enemy);
             }
         }
+
+        public override void renderParticles(Graphics g)
+        {
+            if (bullet != null)
+                bullet.Draw(g);
+        }
+
+        public bool shot()
+        {
+            if (bullet == null)
+            {
+                bullet = new Bullet(x, y, angle);
+            }
+            if (!bullet.alive())
+            {
+                bullet.shot();
+                bullet = null;
+                return false;
+            }
+            else
+            {
+                bullet.shot();
+
+                return true;
+            }
+        }
+
+        public GraphicsPath GetGraphicsPathBullet()
+        {
+            var path = base.GetGraphicsPath();
+            path.AddEllipse(-2,-2, 4, 4);
+            return path;
+        }
+
+        public bool hits(BaseObject obj, Graphics g)
+        {
+            // берем информацию о форме
+            var path1 = bullet.GetGraphicsPathBullet();
+            var path2 = obj.GetGraphicsPath();
+
+            // применяем к объектам матрицы трансформации
+            path1.Transform(bullet.GetTransform());
+            path2.Transform(obj.GetTransform());
+
+            // используем класс Region, который позволяет определить 
+            // пересечение объектов в данном графическом контексте
+            var region = new Region(path1);
+            region.Intersect(path2); // пересекаем формы
+            return !region.IsEmpty(g); // если полученная форма не пуста то значит было
+        }
+        public void hit(BaseObject obj)
+        {
+            if (obj is Enemy)
+            {
+                this.OnHit(obj as Enemy);
+            }
+        }
+
+
     }
 }
