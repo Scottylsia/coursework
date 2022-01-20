@@ -17,9 +17,13 @@ namespace coursework.Objects
 
         public Action<Enemy> OnHit;
 
-        public float vX, vY;
+        public Action<Treatment> OnTreatment;
 
+        public float vX, vY;
+    
         public Bullet bullet = null;
+
+        public int bulletSpeed = 22;
         public Player(float x, float y, float angle) : base(x, y, angle)
         {
 
@@ -59,6 +63,10 @@ namespace coursework.Objects
             {
                 OnEnemyOverlap(obj as Enemy);
             }
+            if(obj is Treatment)
+            {
+                OnTreatment(obj as Treatment);
+            }
         }
 
         public override void renderParticles(Graphics g)
@@ -75,13 +83,17 @@ namespace coursework.Objects
             }
             if (!bullet.alive())
             {
-                bullet.shot();
+                for (int i = 0; i < bulletSpeed; i++)
+
+                    bullet.shot();
                 bullet = null;
                 return false;
             }
             else
             {
-                bullet.shot();
+                for (int i = 0; i < bulletSpeed; i++)
+
+                    bullet.shot();
 
                 return true;
             }
@@ -90,7 +102,8 @@ namespace coursework.Objects
         public GraphicsPath GetGraphicsPathBullet()
         {
             var path = base.GetGraphicsPath();
-            path.AddEllipse(-2,-2, 4, 4);
+            var rec = new Rectangle(-3, -3, 6, 6);
+            path.AddRectangle(rec);
             return path;
         }
 

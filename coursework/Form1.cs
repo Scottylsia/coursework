@@ -19,6 +19,8 @@ namespace coursework
        // List<BaseParticles> particles = new List<BaseParticles>();
         Player player;
         Marker marker;
+        
+
         int hitPoint = 10;
         List<ParticleColorful> particleOfFires = new List<ParticleColorful>();
         Point gravityPoint;
@@ -46,12 +48,23 @@ namespace coursework
                 hitPoint--;
                 objects.Remove(e);
                 objects.Add(new Enemy(rnd.Next() % field.Width, rnd.Next() % field.Height, 0));
+
             };
 
             player.OnHit += (h) =>
             {
                 objects.Remove(h);
                 objects.Add(new Enemy(rnd.Next() % field.Width, rnd.Next() % field.Height, 0));
+                if (rnd.Next(100) < 10)
+                {
+                    objects.Add(new Treatment(rnd.Next() % field.Width, rnd.Next() % field.Height, 0));
+                }
+            };
+
+            player.OnTreatment += (t) =>
+            {
+                objects.Remove(t);
+                hitPoint++;
             };
 
             marker = new Marker(field.Width / 2 + 50, field.Height / 2 + 50, 0);
@@ -96,9 +109,11 @@ namespace coursework
                     {
                         shoted = player.shot();
                     }
+                    for(int i = 0; i < player.bulletSpeed; i++)
                     if (obj is Enemy && player.hits(obj, g))
                     {
                         player.hit(obj);
+                            break;
                     }
 
                 }
@@ -133,7 +148,7 @@ namespace coursework
                 player.vX += dx * 0.5f;
                 player.vY += dy * 0.5f;
 
-                player.angle = 90 - MathF.Atan2(player.vX, player.vY) * 180 / MathF.PI;
+                player.angle = 90 - MathF.Atan2(player.vX, player.vY) * 180/ MathF.PI;
             }
             player.vX += -player.vX * 0.1f;
             player.vY += -player.vY * 0.1f;
@@ -151,6 +166,7 @@ namespace coursework
                 timer1.Enabled = false;
                 MessageBox.Show("Ты пориграл!");
             }
+            label2.Text = hitPoint.ToString();
             field.Invalidate();
         }
 

@@ -15,14 +15,14 @@ namespace coursework.Particles
         {
             startX = x;
             startY = y;
-            Speed = 44;
+            Speed = 2;
             this.Direction = Direction;
         }
 
         public override void Draw(Graphics g)
         {
-            g.FillEllipse(new SolidBrush(Color.FromArgb(0, 0, 0)),
-                X - 2, Y - 2, 4, 4);
+            g.FillRectangle(new SolidBrush(Color.DarkRed),
+                X - 3, Y - 3, 6, 6);
         }
         public void shot()
         {

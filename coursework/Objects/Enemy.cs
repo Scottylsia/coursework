@@ -30,8 +30,8 @@ namespace coursework.Objects
                 Spreading = 360, // немного разбрасываю частицы, чтобы было интереснее
                 SpeedMin = 5, // минимальная скорость 10
                 SpeedMax = 10, // и максимальная скорость 10
-                ColorFrom = Color.Red, // цвет начальный
-                ColorTo = Color.Orange, // цвет конечный
+                ColorFrom = Color.FromArgb(255, 251, 95), // цвет начальный
+                ColorTo = Color.Red, // цвет конечный
                 ParticlesPerTick = 5, // 3 частицы за тик генерю
                 ParticlesCount = 50,
                 LifeMin = 5,
