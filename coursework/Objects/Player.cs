@@ -23,10 +23,35 @@ namespace coursework.Objects
     
         public Bullet bullet = null;
 
+        public Emitter emitter;
+
         public int bulletSpeed = 22;
         public Player(float x, float y, float angle) : base(x, y, angle)
         {
+            int offset = 40;
+            emitter = new Emitter
+            {
 
+                GravitationY = 0, // отключил гравитацию
+                Direction = 0, // направление 0
+                Spreading = 30, // немного разбрасываю частицы, чтобы было интереснее
+                SpeedMin = 10, // минимальная скорость 10
+                SpeedMax = 10, // и максимальная скорость 10
+                ColorFrom = Color.GreenYellow, // цвет начальный
+                ColorTo = Color.Green, // цвет конечный
+                ParticlesPerTick = 10, // 3 частицы за тик генерю
+                X = x, // x -- по центру экрана
+                Y = y - offset, // y поднят вверх на offset
+                emitterLife = 100
+            };
+
+            emitter.impactPoints.Add(new GravityPoint
+            {
+                Power = (int)Math.Pow((emitter.SpeedMax + emitter.SpeedMin) / 2, 2),
+                X = emitter.X,
+                Y = emitter.Y + offset,
+            });
+            
         }
 
         public override void Render(Graphics g)
@@ -73,6 +98,13 @@ namespace coursework.Objects
         {
             if (bullet != null)
                 bullet.Draw(g);
+
+            if (emitter.emitterLife > 0)
+            {
+                emitter.UpdateState();
+                emitter.Render(g);
+                emitter.emitterLife--;
+            }
         }
 
         public bool shot()
@@ -131,6 +163,6 @@ namespace coursework.Objects
             }
         }
 
-
+        
     }
 }

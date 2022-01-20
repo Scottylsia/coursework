@@ -68,9 +68,10 @@ namespace coursework
             };
 
             player.OnTreatment += (t) =>
-            {
+            {   
                 objects.Remove(t);
                 hitPoint++;
+                player.emitter.emitterLife = 100;
             };
 
             marker = new Marker(field.Width / 2 + 50, field.Height / 2 + 50, 0);
@@ -164,6 +165,19 @@ namespace coursework
 
             player.x += player.vX;
             player.y += player.vY;
+
+            player.emitter.X += player.vX;
+            player.emitter.Y += player.vY;
+            foreach (var gp in player.emitter.impactPoints)
+            {
+                gp.X += player.vX;
+                gp.Y += player.vY;
+            }
+            foreach(var p in player.emitter.particles)
+            {
+                p.X += player.vX;
+                p.Y += player.vY;
+            }
 
 
         }

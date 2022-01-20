@@ -9,7 +9,7 @@ namespace coursework.Particles
     {
         public List<IImpactPoint> impactPoints = new List<IImpactPoint>();
 
-        List<BaseParticles> particles = new List<BaseParticles>();
+        public List<BaseParticles> particles = new List<BaseParticles>();
 
         public float GravitationX = 0;
         public float GravitationY = 1;
