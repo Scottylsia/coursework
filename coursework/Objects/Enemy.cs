@@ -13,8 +13,8 @@ namespace coursework.Objects
     {
         public float Mx;
         public float My;
-        bool findEnemy = false;
-        
+        private bool findEnemy = false;
+        public Emitter Boom;
         public Enemy(float x, float y, float angle):base(x,y,angle)
         {
            
@@ -47,6 +47,24 @@ namespace coursework.Objects
 
             }); 
             emitters.Add(emitter);
+
+            Boom = new Emitter
+            {
+                GravitationY = 0, // отключил гравитацию
+                Direction = 0, // направление 0
+                Spreading = 360, // немного разбрасываю частицы, чтобы было интереснее
+                SpeedMin = 1, // минимальная скорость 10
+                SpeedMax = 10, // и максимальная скорость 10
+                ColorFrom = Color.FromArgb(0, Color.Black), // цвет начальный
+                ColorTo = Color.Black, // цвет конечный
+                ParticlesPerTick = 100, // 3 частицы за тик генерю
+                ParticlesCount = 150,
+                LifeMin = 10,
+                LifeMax = 30,
+                X = x,
+                Y = y,
+                emitterLife = 15
+            };
         }
 
         public override void Render(Graphics g)
@@ -67,7 +85,6 @@ namespace coursework.Objects
             
         }
 
-       
 
 
         public override GraphicsPath GetGraphicsPath()
@@ -182,6 +199,17 @@ namespace coursework.Objects
             return !region.IsEmpty(g);
         }
 
-
+        public override void renderParticles(Graphics g)
+        {
+            if (Boom.emitterLife > 0)
+            {
+                Boom.UpdateState();
+                Boom.Render(g);
+                Boom.emitterLife--;
+            }else
+            {
+                base.renderParticles(g);
+            }
+        }
     }
 }

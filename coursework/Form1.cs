@@ -22,6 +22,7 @@ namespace coursework
         
 
         int hitPoint = 10;
+        int Score = 0;
         List<ParticleColorful> particleOfFires = new List<ParticleColorful>();
         Point gravityPoint;
         bool shoted = false;
@@ -53,6 +54,11 @@ namespace coursework
 
             player.OnHit += (h) =>
             {
+                Score++;
+                if(Score % 5 ==0)
+                {
+                    objects.Add(new Enemy(rnd.Next() % field.Width, rnd.Next() % field.Height, 0));
+                }
                 objects.Remove(h);
                 objects.Add(new Enemy(rnd.Next() % field.Width, rnd.Next() % field.Height, 0));
                 if (rnd.Next(100) < 10)
@@ -93,8 +99,10 @@ namespace coursework
 
             foreach (var obj in objects.ToList())
             {
+                bool alife = true;
                 if (obj != player && player.Overlaps(obj, g))
                 {
+                    alife = false;
                     player.Overlap(obj);
                     obj.Overlap(player);
                 }
@@ -110,7 +118,7 @@ namespace coursework
                         shoted = player.shot();
                     }
                     for(int i = 0; i < player.bulletSpeed; i++)
-                    if (obj is Enemy && player.hits(obj, g))
+                    if (obj is Enemy && player.hits(obj, g) && alife)
                     {
                         player.hit(obj);
                             break;
@@ -164,10 +172,12 @@ namespace coursework
             if(hitPoint <= 0)
             {
                 timer1.Enabled = false;
-                MessageBox.Show("Ты пориграл!");
+                MessageBox.Show("Ты пориграл!\nТвой счет:"+Score);
             }
             label2.Text = hitPoint.ToString();
+            label4.Text = Score.ToString();
             field.Invalidate();
+
         }
 
         private void field_MouseClick(object sender, MouseEventArgs e)

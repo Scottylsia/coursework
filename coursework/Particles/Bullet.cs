@@ -7,7 +7,7 @@ using System.Drawing.Drawing2D;
 namespace coursework.Particles
 {
     class Bullet : BaseParticles
-    {
+    { 
         public float lifeDistance = 500;
         public float startX;
         public float startY;

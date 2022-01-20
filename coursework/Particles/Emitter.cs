@@ -34,6 +34,7 @@ namespace coursework.Particles
 
         public int ParticlesCount = 500;
 
+        public int emitterLife =0;
 
         public void UpdateState()
         {
