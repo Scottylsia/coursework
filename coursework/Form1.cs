@@ -20,7 +20,7 @@ namespace coursework
         Player player;
         Marker marker;
         int hitPoint = 10;
-        List<ParticleOfFire> particleOfFires = new List<ParticleOfFire>();
+        List<ParticleColorful> particleOfFires = new List<ParticleColorful>();
         Point gravityPoint;
         bool shoted = false;
 
@@ -63,11 +63,6 @@ namespace coursework
             objects.Add(new Enemy(rnd.Next() % field.Width, rnd.Next() % field.Height, 0));
             objects.Add(new Enemy(rnd.Next() % field.Width, rnd.Next() % field.Height, 0));
 
-            gravityPoint = new Point(10, 10);
-            for (var i = 0; i < 20; i++)
-            {
-                particleOfFires.Add(new ParticleOfFire(0, 0));
-            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -151,6 +146,11 @@ namespace coursework
         }
         private void timer1_Tick(object sender, EventArgs e)
         {
+            if(hitPoint <= 0)
+            {
+                timer1.Enabled = false;
+                MessageBox.Show("Ты пориграл!");
+            }
             field.Invalidate();
         }
 
@@ -180,24 +180,6 @@ namespace coursework
             }
         }
 
-       /* private bool shot()
-        {
-            if (bullet == null)
-            {
-                bullet = new Bullet(player.x, player.y, player.angle);
-            }
-            if (!bullet.alive())
-            {
-                bullet = null;
-                bullet.shot();
-                return false;
-            }
-            else
-            {
-                bullet.shot();
 
-                return true;
-            }
-        }*/
     }
 }

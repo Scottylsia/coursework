@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using coursework.Particles;
 
 namespace coursework.Objects
 {
@@ -15,6 +16,8 @@ namespace coursework.Objects
         public int size = 30;
         
         public Action<BaseObject, BaseObject> OnOverlap;
+
+        public List<Emitter> emitters = new List<Emitter>();
         public BaseObject(float x, float y, float angle)
         {
             this.x = x;
@@ -80,7 +83,11 @@ namespace coursework.Objects
 
         public virtual void renderParticles(Graphics g)
         {
-
+            foreach (var em in emitters)
+            {
+                em.UpdateState();
+                em.Render(g);
+            }
         }
     }
 }

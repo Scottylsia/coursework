@@ -11,7 +11,7 @@ namespace coursework.Particles
         public float lifeDistance = 500;
         public float startX;
         public float startY;
-        public Bullet(float x, float y, float Direction) : base(x, y)
+        public Bullet(float x, float y, float Direction) :  base(x, y)
         {
             startX = x;
             startY = y;
@@ -36,9 +36,9 @@ namespace coursework.Particles
             float dx = X - startX;
             float dy = Y - startY;
 
-            float lenght = MathF.Sqrt(dx * dx + dy * dy);
+            float length = MathF.Sqrt(dx * dx + dy * dy);
 
-            if (lenght < lifeDistance)
+            if (length < lifeDistance)
             {
                 return true;
             }

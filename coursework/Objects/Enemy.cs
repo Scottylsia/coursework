@@ -14,37 +14,39 @@ namespace coursework.Objects
         public float Mx;
         public float My;
         bool findEnemy = false;
-        List<ParticleOfFire> particleOfFires = new List<ParticleOfFire>();
-        Point gravityPoint;
-        ParticleOfFire pof;
+        
         public Enemy(float x, float y, float angle):base(x,y,angle)
         {
            
             Mx = x;
             My = y;
 
-            gravityPoint = new Point((int)x, (int)y+10);
-
             Random rnd = new Random();
-            for (var i = 0; i < 50; i++)
+
+            Emitter emitter = new Emitter
             {
-                particleOfFires.Add(new ParticleOfFire(x + 4 - rnd.Next(8), y + 4 - rnd.Next(8)));
-                particleOfFires[i].onRelifefire += (rf) =>
-                 {
-                     particleOfFires.Remove(rf);
-                     particleOfFires.Add(new ParticleOfFire(x + 4 - rnd.Next(8), y + 4 - rnd.Next(8)));
-                 };
-            }
-
-
-
-/*            pof.onRelifefire += (rf) =>
+                GravitationY = 0, // отключил гравитацию
+                Direction = 0, // направление 0
+                Spreading = 360, // немного разбрасываю частицы, чтобы было интереснее
+                SpeedMin = 5, // минимальная скорость 10
+                SpeedMax = 10, // и максимальная скорость 10
+                ColorFrom = Color.Red, // цвет начальный
+                ColorTo = Color.Orange, // цвет конечный
+                ParticlesPerTick = 5, // 3 частицы за тик генерю
+                ParticlesCount = 50,
+                LifeMin = 5,
+                LifeMax = 10,
+                X = x, 
+                Y = y, 
+            };
+            emitter.impactPoints.Add(new GravityPoint
             {
-                particleOfFires.Remove(rf);
-                particleOfFires.Add(new ParticleOfFire(x + 4 - rnd.Next(8), y + 4 - rnd.Next(8)));
-            };*/
+                Power = 5,
+                X = x,
+                Y = y - 10
 
-
+            }); 
+            emitters.Add(emitter);
         }
 
         public override void Render(Graphics g)
@@ -61,30 +63,11 @@ namespace coursework.Objects
                 -size / 2, -size / 2,
                 size, size
             );
-
+            
+            
         }
 
-        public override void renderParticles(Graphics g)
-        {
-            foreach (var gp in particleOfFires)
-            {
-                gp.Life--;
-                if(gp.Life<0)
-                {
-                    Random rnd = new Random();
-                    gp.X = x + 4 - rnd.Next(8);
-                    gp.Y = y + 4 - rnd.Next(8);
-                    gp.Life = 10 + rnd.Next(20);
-                    gp.Radius = 1 + rnd.Next() % 5;
-                    gp.SpeedY = 2 - rnd.Next() % 4;
-                    gp.SpeedX = 2 - rnd.Next() % 4;
-                }
-
-                gp.gravityMove(gravityPoint);
-
-                gp.Draw(g);
-            }
-        }
+       
 
 
         public override GraphicsPath GetGraphicsPath()
@@ -166,8 +149,19 @@ namespace coursework.Objects
 
                     x += dx;
                     y += dy;
-                gravityPoint.X = (int)(x - dx);
-                gravityPoint.Y = (int)(y - dy - 10);
+                foreach (var em in emitters)
+                {
+                    em.X = x;
+                    em.Y = y;
+                    foreach(var gp in em.impactPoints)
+                    {
+                        gp.X = (int)(x);
+                        gp.Y = (int)(y -  10);
+                    }
+                }
+                
+               // gravityPoint.X = (int)(x - dx);
+                //gravityPoint.Y = (int)(y - dy - 10);
             }
 
         }
@@ -188,6 +182,6 @@ namespace coursework.Objects
             return !region.IsEmpty(g);
         }
 
-        
+
     }
 }
